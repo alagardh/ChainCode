@@ -9,13 +9,13 @@ import (
 	
 
 )
-type SN struct {
+type PO struct {
 
 	cl	CL
 }
 
 
-type SNJSON struct {
+type POJSON struct {
 
 		
 		RefNo 		string `json:"RefNo"`
@@ -36,8 +36,8 @@ type SNJSON struct {
 		PortOfShipment string `json:"PortOfShipment"`
 		PortOfDischarge string `json:"PortOfDischarge"`
 		ProcessStatus   string `json:"ProcessStatus"`
-		SNSubmittedTime string `json: "SNSubmittedTime"`
-		SNRejectReason string `json:"SNRejectReason"`
+		POSubmittedTime string `json: "POSubmittedTime"`
+		PORejectReason string `json:"PORejectReason"`
 		PaymentDate string `json:"PaymentDate"`
 
 
@@ -53,13 +53,13 @@ type SNJSON struct {
 	}
 
 	type ListContracts struct{
-		snDetail	[]ListSN `json:"listSN"`
+		poDetail	[]ListPO `json:"listPO"`
 	}
 
-	type ListSN struct {
+	type ListPO struct {
 
 		ContractNo 		string `json:"ContractNo"`
-		SNSubmittedTime string `json: "SNSubmittedTime"`
+		POSubmittedTime string `json: "POSubmittedTime"`
 		ImporterName string `json:"ImporterName"`
 		ExporterName string `json:"ExporterName"`
 		Currency string `json:"Currency"`
@@ -70,7 +70,7 @@ type SNJSON struct {
 		
 			}
 
-	type SNList struct {
+	type POList struct {
 
 			contractNo  []ContractNo `json:"contractNo"`
 		}
@@ -88,16 +88,16 @@ type SNJSON struct {
 
 	}  
 
-func (t *SN) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+func (t *PO) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	// Check if table already exists
-	_, err := stub.GetTable("SalesNote")
+	_, err := stub.GetTable("PurchaseOrder")
 	if err == nil {
 		// Table already exists; do not recreate
 		return nil, nil
 	}
 
-	// Create SN Table
-	err = stub.CreateTable("SalesNote", []*shim.ColumnDefinition{
+	// Create PO Table
+	err = stub.CreateTable("PurchaseOrder", []*shim.ColumnDefinition{
 		&shim.ColumnDefinition{Name: "Type", Type: shim.ColumnDefinition_STRING, Key: true},
 		&shim.ColumnDefinition{Name: "ContractNo", Type: shim.ColumnDefinition_STRING, Key: true},
 		&shim.ColumnDefinition{Name: "RefNo", Type: shim.ColumnDefinition_STRING, Key: false},
@@ -118,18 +118,18 @@ func (t *SN) Init(stub shim.ChaincodeStubInterface, function string, args []stri
 		&shim.ColumnDefinition{Name: "PortOfShipment", Type: shim.ColumnDefinition_STRING, Key: false},
 		&shim.ColumnDefinition{Name: "PortOfDischarge", Type: shim.ColumnDefinition_STRING, Key: false},
 		&shim.ColumnDefinition{Name: "ProcessStatus", Type: shim.ColumnDefinition_STRING, Key: false},
-		&shim.ColumnDefinition{Name: "SNInitialCreateTime", Type: shim.ColumnDefinition_STRING, Key: false},
+		&shim.ColumnDefinition{Name: "POInitialCreateTime", Type: shim.ColumnDefinition_STRING, Key: false},
 		&shim.ColumnDefinition{Name: "UpdateTime", Type: shim.ColumnDefinition_STRING, Key: false},
-		&shim.ColumnDefinition{Name: "SNCreatedTime", Type: shim.ColumnDefinition_STRING, Key: false},
-		&shim.ColumnDefinition{Name: "SNSubmittedTime", Type: shim.ColumnDefinition_STRING, Key: false},
+		&shim.ColumnDefinition{Name: "POCreatedTime", Type: shim.ColumnDefinition_STRING, Key: false},
+		&shim.ColumnDefinition{Name: "POSubmittedTime", Type: shim.ColumnDefinition_STRING, Key: false},
 		&shim.ColumnDefinition{Name: "CompanyIdOfExporter", Type: shim.ColumnDefinition_STRING, Key: false},
 		&shim.ColumnDefinition{Name: "CompanyIdOfImporter", Type: shim.ColumnDefinition_STRING, Key: false},
-		&shim.ColumnDefinition{Name: "SNRejectReason", Type: shim.ColumnDefinition_STRING, Key: false},
+		&shim.ColumnDefinition{Name: "PORejectReason", Type: shim.ColumnDefinition_STRING, Key: false},
 		&shim.ColumnDefinition{Name: "PaymentDate", Type: shim.ColumnDefinition_STRING, Key: false},
 
 	})
 	if err != nil {
-		return nil, errors.New("Failed creating SalesNoteTable.")
+		return nil, errors.New("Failed creating PurchaseOrderTable.")
 	}
 
 	return nil, nil
@@ -139,7 +139,7 @@ func (t *SN) Init(stub shim.ChaincodeStubInterface, function string, args []stri
 
 //SubmitDoc () inserts a new row in the table
 
-func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func (t *PO) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
 		
 		if len(args) != 25 {
@@ -165,21 +165,21 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 		PortOfShipment := args[16]
 		PortOfDischarge := args[17]
 		//ProcessStatus := args[18]
-		SNInitialCreateTime := args[18]
+		POInitialCreateTime := args[18]
 		UpdateTime := args[19]
-		SNCreatedTime := args[20]
-		SNSubmittedTime := args[21]
+		POCreatedTime := args[20]
+		POSubmittedTime := args[21]
 		CompanyIdOfExporter := args[22]
 		CompanyIdOfImporter := args[23]
-		SNRejectReason := ""
+		PORejectReason := ""
 		PaymentDate := args[24]
 
 
 
 		// Insert a row
-	ok, err := stub.InsertRow("SalesNote", shim.Row{
+	ok, err := stub.InsertRow("PurchaseOrder", shim.Row{
 		Columns: []*shim.Column{
-			&shim.Column{Value: &shim.Column_String_{String_: "SN"}},
+			&shim.Column{Value: &shim.Column_String_{String_: "PO"}},
 			&shim.Column{Value: &shim.Column_String_{String_: ContractNo}},
 			&shim.Column{Value: &shim.Column_String_{String_: RefNo}},
 			&shim.Column{Value: &shim.Column_String_{String_: ExporterName}},
@@ -198,14 +198,14 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 			&shim.Column{Value: &shim.Column_String_{String_: TimeOfShipment}},
 			&shim.Column{Value: &shim.Column_String_{String_: PortOfShipment}},
 			&shim.Column{Value: &shim.Column_String_{String_: PortOfDischarge}},
-			&shim.Column{Value: &shim.Column_String_{String_: "S/N Created"}},
-			&shim.Column{Value: &shim.Column_String_{String_: SNInitialCreateTime}},
+			&shim.Column{Value: &shim.Column_String_{String_: "P/O Created"}},
+			&shim.Column{Value: &shim.Column_String_{String_: POInitialCreateTime}},
 			&shim.Column{Value: &shim.Column_String_{String_: UpdateTime}},
-			&shim.Column{Value: &shim.Column_String_{String_: SNCreatedTime}},
-			&shim.Column{Value: &shim.Column_String_{String_: SNSubmittedTime}},
+			&shim.Column{Value: &shim.Column_String_{String_: POCreatedTime}},
+			&shim.Column{Value: &shim.Column_String_{String_: POSubmittedTime}},
 			&shim.Column{Value: &shim.Column_String_{String_: CompanyIdOfExporter}},
 			&shim.Column{Value: &shim.Column_String_{String_: CompanyIdOfImporter}},
-			&shim.Column{Value: &shim.Column_String_{String_: SNRejectReason}},
+			&shim.Column{Value: &shim.Column_String_{String_: PORejectReason}},
 			&shim.Column{Value: &shim.Column_String_{String_: PaymentDate}}},
 
 	})
@@ -230,19 +230,19 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 
 
 
-	func (t *SN) UpdateSN(stub shim.ChaincodeStubInterface, args []string) ([]byte, error){
+	func (t *PO) UpdatePO(stub shim.ChaincodeStubInterface, args []string) ([]byte, error){
 
 		ContractNo := args[0]
 		rejectionComment := "" 
-		snStatus := ""
+		poStatus := ""
 
 		if len(args) == 3 {
-			snStatus = args[2]
+			poStatus = args[2]
 			rejectionComment = args[1]
 
 		} else if len(args) == 2 {
 
-		snStatus = args[1]
+		poStatus = args[1]
 		
 
 		} else {
@@ -252,12 +252,12 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 
 		// Get the row pertaining to this UID
 		var columns []shim.Column
-		col1 := shim.Column{Value: &shim.Column_String_{String_: "SN"}}
+		col1 := shim.Column{Value: &shim.Column_String_{String_: "PO"}}
 		columns = append(columns, col1)
 		col2 := shim.Column{Value: &shim.Column_String_{String_: ContractNo}}
 		columns = append(columns, col2)
 
-		row, err := stub.GetRow("SalesNote", columns)
+		row, err := stub.GetRow("PurchaseOrder", columns)
 		if err != nil {
 		return nil, fmt.Errorf("Error: Failed retrieving document with ContractNo %s. Error %s", ContractNo, err.Error())
 		}
@@ -287,13 +287,13 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 		PortOfShipment := row.Columns[17].GetString_()
 		PortOfDischarge := row.Columns[18].GetString_()
 		ProcessStatus := row.Columns[19].GetString_()
-		SNInitialCreateTime := row.Columns[20].GetString_()
+		POInitialCreateTime := row.Columns[20].GetString_()
 		UpdateTime := row.Columns[21].GetString_()
-		SNCreatedTime := row.Columns[22].GetString_()
-		SNSubmittedTime := row.Columns[23].GetString_()
+		POCreatedTime := row.Columns[22].GetString_()
+		POSubmittedTime := row.Columns[23].GetString_()
 		CompanyIdOfExporter := row.Columns[24].GetString_()
 		CompanyIdOfImporter := row.Columns[25].GetString_()
-		SNRejectReason := rejectionComment
+		PORejectReason := rejectionComment
 		PaymentDate := row.Columns[27].GetString_()
 
 
@@ -301,22 +301,22 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 
 		var newStatus string
 
-		if snStatus == "AcceptSN"{
+		if poStatus == "AcceptPO"{
 
-			newStatus = "S/N Submitted"
+			newStatus = "P/O Submitted"
 
-		} else if snStatus == "RejectSN"{
+		} else if poStatus == "RejectPO"{
 
-			newStatus = "S/N Rejected"
+			newStatus = "P/O Rejected"
 		}
 
 		//Start- Check that the currentStatus to newStatus transition is accurate
 
 		stateTransitionAllowed := false
 
-		if ProcessStatus == "S/N Created" && newStatus == "S/N Submitted" {
+		if ProcessStatus == "P/O Created" && newStatus == "P/O Submitted" {
 		stateTransitionAllowed = true
-		} else if ProcessStatus == "S/N Created" && newStatus == "S/N Rejected" {
+		} else if ProcessStatus == "P/O Created" && newStatus == "P/O Rejected" {
 		stateTransitionAllowed = true
 		} 
 
@@ -326,9 +326,9 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 
 	//End- Check that the currentStatus to newStatus transition is accurate
 
-		ok, err := stub.ReplaceRow("SalesNote", shim.Row{
+		ok, err := stub.ReplaceRow("PurchaseOrder", shim.Row{
 		Columns: []*shim.Column{
-			&shim.Column{Value: &shim.Column_String_{String_: "SN"}},
+			&shim.Column{Value: &shim.Column_String_{String_: "PO"}},
 			&shim.Column{Value: &shim.Column_String_{String_: ContractNo}},
 			&shim.Column{Value: &shim.Column_String_{String_: RefNo}},
 			&shim.Column{Value: &shim.Column_String_{String_: ExporterName}},
@@ -348,13 +348,13 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 			&shim.Column{Value: &shim.Column_String_{String_: PortOfShipment}},
 			&shim.Column{Value: &shim.Column_String_{String_: PortOfDischarge}},
 			&shim.Column{Value: &shim.Column_String_{String_: newStatus}},
-			&shim.Column{Value: &shim.Column_String_{String_: SNInitialCreateTime}},
+			&shim.Column{Value: &shim.Column_String_{String_: POInitialCreateTime}},
 			&shim.Column{Value: &shim.Column_String_{String_: UpdateTime}},
-			&shim.Column{Value: &shim.Column_String_{String_: SNCreatedTime}},
-			&shim.Column{Value: &shim.Column_String_{String_: SNSubmittedTime}},
+			&shim.Column{Value: &shim.Column_String_{String_: POCreatedTime}},
+			&shim.Column{Value: &shim.Column_String_{String_: POSubmittedTime}},
 			&shim.Column{Value: &shim.Column_String_{String_: CompanyIdOfExporter}},
 			&shim.Column{Value: &shim.Column_String_{String_: CompanyIdOfImporter}},
-			&shim.Column{Value: &shim.Column_String_{String_: SNRejectReason}},
+			&shim.Column{Value: &shim.Column_String_{String_: PORejectReason}},
 			&shim.Column{Value: &shim.Column_String_{String_: PaymentDate}},
 			
 			
@@ -367,7 +367,7 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 
 
 
-		if snStatus == "AcceptSN"{
+		if poStatus == "AcceptPO"{
 			toSend := make ([]string, 2)
 			toSend[0] = string(ContractNo)
 			toSend[1] = "Exporter"
@@ -384,17 +384,17 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 }
 
 
-	func (t *SN) GetContractStatus(stub shim.ChaincodeStubInterface, args []string) ([]byte, error){
+	func (t *PO) GetContractStatus(stub shim.ChaincodeStubInterface, args []string) ([]byte, error){
 		if len(args) != 1 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 1.")
 		}
 
 
-		var snJSON SNJSON
+		var poJSON POJSON
 
-		sndetails,_ := t.GetSN(stub, []string{args[0]})
+		podetails,_ := t.GetPO(stub, []string{args[0]})
 
-		err := json.Unmarshal(sndetails, &snJSON)
+		err := json.Unmarshal(podetails, &poJSON)
 		if err != nil{
 
 			return nil, err
@@ -402,12 +402,12 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 		}
 
 		
-		return []byte(snJSON.ProcessStatus), nil
+		return []byte(poJSON.ProcessStatus), nil
 
 	}
 
 
-	func (t *SN) GetSN (stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	func (t *PO) GetPO (stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
 		if len(args) != 1 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 1.")
@@ -420,12 +420,12 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 
 	// Get the row pertaining to this UID
 	var columns []shim.Column
-	col1 := shim.Column{Value: &shim.Column_String_{String_: "SN"}}
+	col1 := shim.Column{Value: &shim.Column_String_{String_: "PO"}}
 	columns = append(columns, col1)
 	col2 := shim.Column{Value: &shim.Column_String_{String_: ContractNo}}
 	columns = append(columns, col2)
 
-	row, err := stub.GetRow("SalesNote", columns)
+	row, err := stub.GetRow("PurchaseOrder", columns)
 	if err != nil {
 		return nil, fmt.Errorf("Error: Failed retrieving document with ContractNo %s. Error %s", ContractNo, err.Error())
 	}
@@ -435,47 +435,47 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 		return nil, nil
 	}
 
-	var snJSON SNJSON 
+	var poJSON POJSON 
 
-	snJSON.RefNo = row.Columns[2].GetString_()
-	snJSON.ExporterName = row.Columns[3].GetString_()
-	snJSON.ImporterName = row.Columns[4].GetString_()
-	snJSON.Commodity = row.Columns[5].GetString_() 
-	snJSON.UnitPrice = row.Columns[6].GetString_()
-	snJSON.Amount = row.Columns[7].GetString_()
-	snJSON.Currency = row.Columns[8].GetString_()
-	snJSON.Quantity = row.Columns[9].GetString_()
-	snJSON.Weight = row.Columns[10].GetString_()
-	snJSON.TermsOfTrade = row.Columns[11].GetString_()
-	snJSON.TermsOfInsurance = row.Columns[12].GetString_()
-	snJSON.TermsOfPayment = row.Columns[13].GetString_()
-	snJSON.PackingMethod = row.Columns[14].GetString_()
-	snJSON.WayOfTransportation = row.Columns[15].GetString_()
-	snJSON.TimeOfShipment = row.Columns[16].GetString_()
-	snJSON.PortOfShipment = row.Columns[17].GetString_()
-	snJSON.PortOfDischarge = row.Columns[18].GetString_()
-	snJSON.ProcessStatus = row.Columns[19].GetString_()
-	snJSON.SNSubmittedTime = row.Columns[23].GetString_()
-	snJSON.SNRejectReason = row.Columns[26].GetString_()
-	snJSON.PaymentDate = row.Columns[27].GetString_()
+	poJSON.RefNo = row.Columns[2].GetString_()
+	poJSON.ExporterName = row.Columns[3].GetString_()
+	poJSON.ImporterName = row.Columns[4].GetString_()
+	poJSON.Commodity = row.Columns[5].GetString_() 
+	poJSON.UnitPrice = row.Columns[6].GetString_()
+	poJSON.Amount = row.Columns[7].GetString_()
+	poJSON.Currency = row.Columns[8].GetString_()
+	poJSON.Quantity = row.Columns[9].GetString_()
+	poJSON.Weight = row.Columns[10].GetString_()
+	poJSON.TermsOfTrade = row.Columns[11].GetString_()
+	poJSON.TermsOfInsurance = row.Columns[12].GetString_()
+	poJSON.TermsOfPayment = row.Columns[13].GetString_()
+	poJSON.PackingMethod = row.Columns[14].GetString_()
+	poJSON.WayOfTransportation = row.Columns[15].GetString_()
+	poJSON.TimeOfShipment = row.Columns[16].GetString_()
+	poJSON.PortOfShipment = row.Columns[17].GetString_()
+	poJSON.PortOfDischarge = row.Columns[18].GetString_()
+	poJSON.ProcessStatus = row.Columns[19].GetString_()
+	poJSON.POSubmittedTime = row.Columns[23].GetString_()
+	poJSON.PORejectReason = row.Columns[26].GetString_()
+	poJSON.PaymentDate = row.Columns[27].GetString_()
 	
 
-	jsonSN, err := json.Marshal(snJSON)
+	jsonPO, err := json.Marshal(poJSON)
 
 	if err != nil {
 
 		return nil, err
 	}
 
-	fmt.Println(jsonSN)
+	fmt.Println(jsonPO)
 
- 	return jsonSN, nil
+ 	return jsonPO, nil
 
 	}
 
 
 
-	func (t *SN) ListContractsByCompID(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	func (t *PO) ListContractsByCompID(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
 		if len(args) != 2 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 2.")
@@ -488,18 +488,18 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 	
 		var listContracts ListContracts
 
-		listContracts.snDetail = make([]ListSN, 0)
+		listContracts.poDetail = make([]ListPO, 0)
 		
 
 		if roleID == "1" || roleID == "4" {
 
 			
 			var columns []shim.Column
-			col1 := shim.Column{Value: &shim.Column_String_{String_: "SN"}}
+			col1 := shim.Column{Value: &shim.Column_String_{String_: "PO"}}
 			columns = append(columns, col1)
 			
 
-			rows,err := stub.GetRows("SalesNote", columns)
+			rows,err := stub.GetRows("PurchaseOrder", columns)
 			
 			if err != nil {
 			return nil, fmt.Errorf("Error: Failed retrieving document Error %s", err.Error())
@@ -538,14 +538,14 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 
 					if contractIDOfUser.ContractNo != "" {
 
-					b,_ := t.GetSN(stub, []string{contractIDOfUser.ContractNo})
-					var listSN ListSN
-					err = json.Unmarshal(b, &listSN)
-					listSN.ContractNo = contractIDOfUser.ContractNo
+					b,_ := t.GetPO(stub, []string{contractIDOfUser.ContractNo})
+					var listPO ListPO
+					err = json.Unmarshal(b, &listPO)
+					listPO.ContractNo = contractIDOfUser.ContractNo
 
-					if listSN.ProcessStatus == "S/N Rejected" {
+					if listPO.ProcessStatus == "P/O Rejected" {
 
-						listSN.ProcessStatus = ""
+						listPO.ProcessStatus = ""
 					}
 
 					b,_ = t.cl.GetCargoLocation(stub, []string{contractIDOfUser.ContractNo})
@@ -553,8 +553,8 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 					if err != nil {
         				return nil, err
         			}
-					listSN.CargoLocation = string(b)
-					listContracts.snDetail = append(listContracts.snDetail, listSN)
+					listPO.CargoLocation = string(b)
+					listContracts.poDetail = append(listContracts.poDetail, listPO)
 
 					}
 
@@ -618,22 +618,22 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 
 					if contractIDOfUser.ContractNo != "" {
 
-					//var snJSON SNJSON
-					b,_ := t.GetSN(stub, []string{contractIDOfUser.ContractNo})
-					var listSN ListSN
-					err = json.Unmarshal(b, & listSN)
-					listSN.ContractNo = contractIDOfUser.ContractNo
+					//var poJSON POJSON
+					b,_ := t.GetPO(stub, []string{contractIDOfUser.ContractNo})
+					var listPO ListPO
+					err = json.Unmarshal(b, & listPO)
+					listPO.ContractNo = contractIDOfUser.ContractNo
 
-					if listSN.ProcessStatus == "S/N Rejected" {
+					if listPO.ProcessStatus == "P/O Rejected" {
 
-						listSN.ProcessStatus = ""
+						listPO.ProcessStatus = ""
 					}
 
 					b,_ = t.cl.GetCargoLocation(stub, []string{contractIDOfUser.ContractNo})
 				
-					listSN.CargoLocation = string(b)
+					listPO.CargoLocation = string(b)
 
-					listContracts.snDetail = append(listContracts.snDetail, listSN)
+					listContracts.poDetail = append(listContracts.poDetail, listPO)
 
 				}
 
@@ -674,23 +674,23 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 					}  
 
 					if contractIDOfUser.ContractNo != "" {
-					b,_ := t.GetSN(stub, []string{contractIDOfUser.ContractNo})
-					var listSN ListSN
-					err = json.Unmarshal(b, &listSN)
-					listSN.ContractNo = contractIDOfUser.ContractNo
+					b,_ := t.GetPO(stub, []string{contractIDOfUser.ContractNo})
+					var listPO ListPO
+					err = json.Unmarshal(b, &listPO)
+					listPO.ContractNo = contractIDOfUser.ContractNo
 
 
-					if listSN.ProcessStatus == "S/N Rejected" {
+					if listPO.ProcessStatus == "P/O Rejected" {
 
-						listSN.ProcessStatus = ""
+						listPO.ProcessStatus = ""
 					}
 
 
 					b,_ = t.cl.GetCargoLocation(stub, []string{contractIDOfUser.ContractNo})
 
-					listSN.CargoLocation = string(b)
+					listPO.CargoLocation = string(b)
 
-					listContracts.snDetail = append(listContracts.snDetail, listSN)
+					listContracts.poDetail = append(listContracts.poDetail, listPO)
 
 					}
 
@@ -700,19 +700,19 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 
 				
 
-		return json.Marshal(listContracts.snDetail) 
+		return json.Marshal(listContracts.poDetail) 
 
 	}
 
 
-	func (t *SN) NumbContracts(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	func (t *PO) NumbContracts(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
 		if len(args) != 0 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 0.")
 	}
 
 	var columns []shim.Column
-	col1 := shim.Column{Value: &shim.Column_String_{String_: "SN"}}
+	col1 := shim.Column{Value: &shim.Column_String_{String_: "PO"}}
 	columns = append(columns, col1)
 
 	contractCounter := 0
@@ -737,13 +737,13 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 	}
 
 
-	func (t *SN) ListOfContracts(stub shim.ChaincodeStubInterface, args []string) ([]byte, error){
+	func (t *PO) ListOfContracts(stub shim.ChaincodeStubInterface, args []string) ([]byte, error){
 		if len(args) != 0 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 0.")
 		}
 
 	var columns []shim.Column
-	col1 := shim.Column{Value: &shim.Column_String_{String_: "SN"}}
+	col1 := shim.Column{Value: &shim.Column_String_{String_: "PO"}}
 	columns = append(columns, col1)
 	
 
@@ -752,7 +752,7 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 		return nil, fmt.Errorf("Failed to retrieve row")
 	}
 
- 	var listOfContracts SNList
+ 	var listOfContracts POList
  	var contractNo ContractNo 
 
  	listOfContracts.contractNo = make([]ContractNo, 0)
