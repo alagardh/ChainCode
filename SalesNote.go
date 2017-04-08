@@ -11,7 +11,7 @@ import (
 )
 type SN struct {
 
-	cl	CL
+	cl1	CL
 }
 
 
@@ -44,7 +44,7 @@ type SNJSON struct {
 }
 	
 
-	type ContractsList struct {
+	type SNContractsList struct {
 		ContractNo string `json:"ContractNo"`
 	}
 
@@ -81,12 +81,12 @@ type SNJSON struct {
 	}
 
 
-	//type ClArgs struct {
+	type Cl1Args struct {
 
-	//	ContractNo 		string `json:"ContractNo"`
-	//	CargoLocation 	string `json:"CargoLocation"`
+		ContractNo 		string `json:"ContractNo"`
+		CargoLocation 	string `json:"CargoLocation"`
 
-	//}  
+	}  
 
 func (t *SN) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	// Check if table already exists
@@ -219,9 +219,9 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 			toSend[0] = string(ContractNo)
 			toSend[1] = ""
 			
-			_,clErr := t.cl.UpdateCargoLocation(stub, toSend)
-			if clErr != nil {
-				return nil, clErr
+			_,cl1Err := t.cl1.UpdateCargoLocation(stub, toSend)
+			if cl1Err != nil {
+				return nil, cl1Err
 			} 
 
 	
@@ -373,9 +373,9 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 			toSend[1] = "Exporter"
 
 			
-			_,clErr := t.cl.UpdateCargoLocation(stub, toSend)
-			if clErr != nil {
-				return nil, clErr
+			_,cl1Err := t.cl1.UpdateCargoLocation(stub, toSend)
+			if cl1Err != nil {
+				return nil, cl1Err
 			} 
 		}
 
