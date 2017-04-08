@@ -548,7 +548,7 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 						listSN.ProcessStatus = ""
 					}
 
-					b,_ = t.cl.GetCargoLocation(stub, []string{contractIDOfUser.ContractNo})
+					b,_ = t.clSN.GetCargoLocation(stub, []string{contractIDOfUser.ContractNo})
 
 					if err != nil {
         				return nil, err
@@ -629,7 +629,7 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 						listSN.ProcessStatus = ""
 					}
 
-					b,_ = t.cl.GetCargoLocation(stub, []string{contractIDOfUser.ContractNo})
+					b,_ = t.clSN.GetCargoLocation(stub, []string{contractIDOfUser.ContractNo})
 				
 					listSN.CargoLocation = string(b)
 
@@ -686,7 +686,7 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 					}
 
 
-					b,_ = t.cl.GetCargoLocation(stub, []string{contractIDOfUser.ContractNo})
+					b,_ = t.clSN.GetCargoLocation(stub, []string{contractIDOfUser.ContractNo})
 
 					listSN.CargoLocation = string(b)
 
