@@ -11,7 +11,7 @@ import (
 )
 type SN struct {
 
-	cl1	CL
+	clSN	CL
 }
 
 
@@ -48,11 +48,11 @@ type SNJSON struct {
 		ContractNo string `json:"ContractNo"`
 	}
 
-	type count struct {
+	type sncount struct {
 		NumContracts int
 	}
 
-	type ListContracts struct{
+	type SNListContracts struct{
 		snDetail	[]ListSN `json:"listSN"`
 	}
 
@@ -75,13 +75,13 @@ type SNJSON struct {
 			contractNo  []ContractNo `json:"contractNo"`
 		}
 
-	type ContractNo struct {
+	type SNContractNo struct {
 
 		ContractNo  string `json:"ContractNo"`
 	}
 
 
-	type Cl1Args struct {
+	type ClSNArgs struct {
 
 		ContractNo 		string `json:"ContractNo"`
 		CargoLocation 	string `json:"CargoLocation"`
@@ -737,7 +737,7 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 	}
 
 
-	func (t *SN) ListOfContracts(stub shim.ChaincodeStubInterface, args []string) ([]byte, error){
+	func (t *SN) SNListOfContracts(stub shim.ChaincodeStubInterface, args []string) ([]byte, error){
 		if len(args) != 0 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 0.")
 		}
