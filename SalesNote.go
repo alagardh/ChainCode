@@ -486,7 +486,7 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 		companyID := args[0]
 		roleID := args[1]
 	
-		var listContracts ListContracts
+		var listContracts SNListContracts
 
 		listContracts.snDetail = make([]ListSN, 0)
 		
