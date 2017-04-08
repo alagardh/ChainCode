@@ -747,7 +747,7 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 	columns = append(columns, col1)
 	
 
-	rows, err := stub.GetRows("PurchaseOrder", columns)
+	rows, err := stub.GetRows("SalesNote", columns)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to retrieve row")
 	}
