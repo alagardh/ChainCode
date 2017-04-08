@@ -219,9 +219,9 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 			toSend[0] = string(ContractNo)
 			toSend[1] = ""
 			
-			_,cl1Err := t.cl1.UpdateCargoLocation(stub, toSend)
-			if cl1Err != nil {
-				return nil, cl1Err
+			_,clSNErr := t.clSN.UpdateCargoLocation(stub, toSend)
+			if clSNErr != nil {
+				return nil, clSNErr
 			} 
 
 	
@@ -373,9 +373,9 @@ func (t *SN) SubmitDoc(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 			toSend[1] = "Exporter"
 
 			
-			_,cl1Err := t.cl1.UpdateCargoLocation(stub, toSend)
-			if cl1Err != nil {
-				return nil, cl1Err
+			_,clSNErr := t.clSN.UpdateCargoLocation(stub, toSend)
+			if clSNErr != nil {
+				return nil, clSNErr
 			} 
 		}
 
