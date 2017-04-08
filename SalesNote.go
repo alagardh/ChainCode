@@ -81,12 +81,12 @@ type SNJSON struct {
 	}
 
 
-	type ClArgs struct {
+	//type ClArgs struct {
 
-		ContractNo 		string `json:"ContractNo"`
-		CargoLocation 	string `json:"CargoLocation"`
+	//	ContractNo 		string `json:"ContractNo"`
+	//	CargoLocation 	string `json:"CargoLocation"`
 
-	}  
+	//}  
 
 func (t *SN) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	// Check if table already exists
